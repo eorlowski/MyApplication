@@ -45,11 +45,16 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean =
-        if (this::navController.isInitialized) {
-             item.onNavDestinationSelected(this.navController) ||
-               super.onOptionsItemSelected(item)
-           } else false
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val intent = Intent(this, SettingsActivity::class.java)
+//        if (this::navController.isInitialized) {
+//             item.onNavDestinationSelected(this.navController) ||
+//               super.onOptionsItemSelected(item)
+//           } else false
+        startActivity(intent)
+        return true
+    }
+
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)

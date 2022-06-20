@@ -18,7 +18,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/Theme.MyApplication.PopupOverlay"
-            app:title="Settings bla"/>
+            app:title="Settings"/>
         <!--app:menu="@menu/menu_settings" -->
     </com.google.android.material.appbar.AppBarLayout>
 

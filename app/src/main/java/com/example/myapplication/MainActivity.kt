@@ -8,21 +8,32 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.activity.viewModels
 import android.view.Menu
 import android.view.MenuItem
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.model.Image
+import com.example.myapplication.model.ImageListViewModel
+import com.example.myapplication.model.ImageListViewModelFactory
+import com.example.myapplication.model.ImagesAdapter
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    val imageListViewModel by viewModels<ImageListViewModel> {
+        ImageListViewModelFactory(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val imagesAdapter = ImagesAdapter { image -> adapterOnClick(image)}
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -37,6 +48,20 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
+
+//        val imagesAdapter = ImagesAdapter { image -> adapterOnClick(image)}
+        val recyclerView: RecyclerView = findViewById(androidx.preference.R.id.recycler_view)
+        recyclerView.adapter = imagesAdapter
+//
+        imageListViewModel.imageLiveData.observe( this, {
+            it?.let {
+                imagesAdapter.submitList(it as MutableList<Image>)
+            }
+        })
+    }
+
+    private fun adapterOnClick(image: Image) {
+        // do nothing
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

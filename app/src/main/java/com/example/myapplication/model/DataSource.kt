@@ -10,7 +10,7 @@ class DataSource(resources: Resources) {
 
     // initial list of images
     private fun imageList(resources: Resources): List<Image> {
-        return listOf(Image("test3"), Image("test2"))
+        return listOf(Image(null,"test3"), Image(null,"test2"))
 //        return imagesLiveData.value
     }
 

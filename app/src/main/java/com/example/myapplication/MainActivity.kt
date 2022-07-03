@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                 displayName = myFile.getName()
             }
             println(displayName)
-            imageListViewModel.addImage(Image(displayName?:"noname"))
+            imageListViewModel.addImage(Image(uri,displayName?:"noname"))
 
 //            doSomeOperations()
 // TODO: constructor of this class should get DataSource as an argument!

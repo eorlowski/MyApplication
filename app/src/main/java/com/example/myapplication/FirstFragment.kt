@@ -125,7 +125,7 @@ class FirstFragment : Fragment() {
                 displayName = myFile.getName()
             }
             println(displayName)
-            (activity!! as MainActivity).imageListViewModel.addImage(Image(displayName?:"noname"))
+            (activity!! as MainActivity).imageListViewModel.addImage(Image(uri, displayName?:"noname"))
 
 //            doSomeOperations()
 // TODO: constructor of this class should get DataSource as an argument!

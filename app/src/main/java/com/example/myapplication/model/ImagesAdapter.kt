@@ -3,6 +3,7 @@ package com.example.myapplication.model
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -13,6 +14,7 @@ class ImagesAdapter(private val onClick: (Image) -> Unit): ListAdapter<Image, Im
 
     class ImageViewHolder(itemView: View, val onClick: (Image) -> Unit) : RecyclerView.ViewHolder(itemView) {
         private val imageTextView: TextView = itemView.findViewById(R.id.imageName)
+        private val imageView: ImageView = itemView.findViewById(R.id.myimage)
         private var currentImage: Image? = null
 
         init {
@@ -25,6 +27,7 @@ class ImagesAdapter(private val onClick: (Image) -> Unit): ListAdapter<Image, Im
         fun bind(image: Image) {
             currentImage = image
             imageTextView.text = image.fileName
+            imageView.setImageURI(image.uri)
         }
     }
 

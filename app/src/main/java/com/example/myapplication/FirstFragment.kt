@@ -39,6 +39,8 @@ class FirstFragment : Fragment() {
 //    private var layoutManager: RecyclerView.LayoutManager? = null
 //    private var adapter: RecyclerView.Adapter<ImagesAdapter.ImageViewHolder>? = null
 
+    val imagesAdapter = ImagesAdapter { image -> adapterOnClick(image)}
+
     private fun adapterOnClick(image: Image) {
         println("Clicked on image ${image.fileName}")
     }
@@ -52,12 +54,18 @@ class FirstFragment : Fragment() {
 
 //        val view = inflater.inflate(R.layout.fragment_first, container, false)
 
-//        view.findViewById<RecyclerView>(R.id.recycler_view)
-//        binding.recyclerView.layoutManager = LinearLayoutManager(activity)
-//        binding.recyclerView.adapter = activity.imagesAdapter
+//        val recylerView = view.findViewById<RecyclerView>(R.id.recycler_view)
 //        view.recyclerView.layoutManager = LinearLayoutManager(activity)
 //        view.recyclerView.adapter = imagesAdapter
-//        imagesAdapter.submitList(listOf(Image("testimage")))
+        binding.recyclerView.layoutManager = LinearLayoutManager(activity)
+        binding.recyclerView.adapter = imagesAdapter
+
+        (activity as MainActivity).imageListViewModel.imageLiveData.observe( activity as MainActivity, {
+            it?.let {
+                imagesAdapter.submitList(it as MutableList<Image>)
+            }
+        })
+
         return binding.root
 
     }

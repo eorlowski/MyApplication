@@ -1,7 +1,11 @@
 package com.example.myapplication
 
+import android.app.Activity
 import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -11,6 +15,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.activity.viewModels
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
@@ -20,6 +27,7 @@ import com.example.myapplication.model.Image
 import com.example.myapplication.model.ImageListViewModel
 import com.example.myapplication.model.ImageListViewModelFactory
 import com.example.myapplication.model.ImagesAdapter
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,11 +37,11 @@ class MainActivity : AppCompatActivity() {
     val imageListViewModel by viewModels<ImageListViewModel> {
         ImageListViewModelFactory(this)
     }
+    val imagesAdapter = ImagesAdapter { image -> adapterOnClick(image)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val imagesAdapter = ImagesAdapter { image -> adapterOnClick(image)}
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -45,8 +53,12 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show()
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.type = "image/*"
+            resultLauncher.launch(intent)
         }
 
 //        val imagesAdapter = ImagesAdapter { image -> adapterOnClick(image)}
@@ -86,4 +98,37 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            val uri: Uri? = data?.data
+            val uriString: String = uri!!.toString()
+            val myFile = File(uriString)
+            val path: String = myFile.getAbsolutePath()
+            var displayName: String? = null
+
+            if (uriString.startsWith("content://")) {
+                var cursor: Cursor? = null
+                try {
+                    cursor = contentResolver.query(uri, null, null, null, null)
+                    if (cursor != null && cursor.moveToFirst()) {
+                        displayName =
+                            cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                    }
+                } finally {
+                    cursor!!.close()
+                }
+            } else if (uriString.startsWith("file://")) {
+                displayName = myFile.getName()
+            }
+            println(displayName)
+            imageListViewModel.addImage(Image(displayName?:"noname"))
+
+//            doSomeOperations()
+// TODO: constructor of this class should get DataSource as an argument!
+        }
+    }
+
 }
